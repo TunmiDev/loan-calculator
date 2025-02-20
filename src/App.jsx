@@ -1,15 +1,14 @@
 import React from "react";
-
+import logo from "../src/assets/logo.png";
 const index = () => {
   return (
     <div>
       <div>
         <div>
           <div className="mx-auto bg-white rounded-lg shadow-lg max-w-4xl p-6">
-            <p className="text-2xl font-bold text-gray-800 mb-6">
-              Interactive Loan Calculator
-            </p>
-            <form className="md:grid-cols-2 space-y-4 grid grid-cols-1 gap-4">
+            <img src={logo} alt="" className="w-32 h-auto" />
+
+            <form className="md:grid-cols-2 space-y-4 grid grid-cols-1 gap-4 mt-12">
               <div>
                 <label className="text-sm font-medium text-gray-700 block">
                   Income Amount
@@ -62,7 +61,7 @@ const index = () => {
                 <button
                   type="button"
                   className="inline-flex border border-indigo-500 focus:outline-none focus:ring-2
-            focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm
+            focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-purple-700 text-sm
             font-medium text-white shadow-sm"
                 >
                   Calculate
@@ -109,7 +108,8 @@ const index = () => {
               <button
                 type="button"
                 className="inline-flex border border-indigo-500 focus:outline-none focus:ring-2
-          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm
+          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-purple-700
+           text-sm
           font-medium text-white shadow-sm"
               >
                 Download Details
@@ -117,7 +117,7 @@ const index = () => {
               <button
                 type="button"
                 className="inline-flex border border-gray-500 focus:outline-none focus:ring-2
-          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-gray-600 text-sm font-medium
+          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-gray-600 text-sm font-medium hover:bg-purple-700
           text-white shadow-sm"
               >
                 Share Details
@@ -125,7 +125,7 @@ const index = () => {
               <button
                 type="button"
                 className="inline-flex border border-gray-500 focus:outline-none focus:ring-2
-          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-gray-600 text-sm font-medium
+          focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-gray-600 text-sm font-medium hover:bg-purple-700
           text-white shadow-sm"
               >
                 KYC Form
