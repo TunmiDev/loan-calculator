@@ -131,10 +131,10 @@ const LoanCalculator = () => {
             </p>
           </div>
           {/* Button */}
-          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-gray-300 mx-2">
+          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
             Download Result
           </button>
-          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-gray-300 mx-2">
+          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
             Share Details
           </button>
         </div>
