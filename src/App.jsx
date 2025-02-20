@@ -8,6 +8,7 @@ const LoanCalculator = () => {
   const [loanAmount, setLoanAmount] = useState(823290);
   const [tenure, setTenure] = useState(60);
   const [interestRate, setInterestRate] = useState(9.5);
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
 
   // Function to calculate
   const calculateEMI = () => {
@@ -76,9 +77,13 @@ const LoanCalculator = () => {
         </div>
 
         {/* Button */}
-        <button className="mt-8 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6">
+        <button
+          className="mt-8 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6"
+          onClick={() => setMonthlyPayment(calculateEMI())} // Update state on click
+        >
           Calculate
         </button>
+
         <span>{""}</span>
         <button className="mt-8 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6">
           KYC Form
@@ -127,9 +132,10 @@ const LoanCalculator = () => {
           <div className="mb-4">
             <p className="text-sm">Monthly Payment</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{calculateEMI().toLocaleString()}
+              ₦{monthlyPayment.toLocaleString()}
             </p>
           </div>
+
           {/* Button */}
           <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
             Download Result
