@@ -84,7 +84,7 @@ const LoanCalculator = () => {
             }}
             className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
       flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
-      font-normal w-full h-12 text-xs rounded-md shadow-sm"
+      font-normal w-full h-12 text-xs rounded-md shadow-sm mb-5"
           />
 
           {/* Range Slider */}
@@ -95,7 +95,7 @@ const LoanCalculator = () => {
             step="1000" // Ensures smoother increments
             value={loanAmount === "" ? 200000 : loanAmount} // Default to 200,000 if empty
             onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-purple-600"
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-purple-600 mb-6"
             style={{
               background: `linear-gradient(to right, #8000ff ${
                 ((loanAmount - 200000) / (1500000 - 200000)) * 100
@@ -104,16 +104,39 @@ const LoanCalculator = () => {
           />
         </div>
 
-        {/* Button */}
+        {/* Down Payment and Interest Rate */}
+        <div>
+          <div className="items-center flex space-x-4">
+            <label className="bg-purple-500 text-white px-4 py-2 rounded-md">
+              Down Payment:
+            </label>
+            <input
+              value="411645"
+              type="text"
+              className="p-2 border border-gray-300 rounded-md"
+            />
+            <label className="bg-purple-500 text-white px-4 py-2 rounded-md">
+              Interest Rate:
+            </label>
+            <div className="items-center flex">
+              <input
+                value="10 %"
+                type="text"
+                className="p-2 border border-gray-300 w-16 rounded-md"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons*/}
         <button
-          className="mt-8 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6"
+          className="mt-10 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-32"
           onClick={() => setMonthlyPayment(calculateEMI())} // Update state on click
         >
           Calculate
         </button>
-
         <span>{""}</span>
-        <button className="mt-8 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6">
+        <button className="mt-10 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6">
           KYC Form
         </button>
       </div>
@@ -130,13 +153,13 @@ const LoanCalculator = () => {
             </div>
             <p className="text-4xl font-bold mb-4">{name || "Your Name"}</p>
             <div>
-              <p className="text-sm">Amount Borrowed</p>
+              <p className="text-sm">Eligible Loan Amount</p>
               <p className="text-2xl font-bold mt-1">
                 ₦{loanAmount.toLocaleString()}
               </p>
             </div>
             <div className="mt-4">
-              <p className="text-sm">Down Payment</p>
+              <p className="text-sm">Loan Tenure</p>
               <p className="text-2xl font-bold mt-1">
                 ₦{downPayment.toLocaleString()}
               </p>
@@ -145,7 +168,7 @@ const LoanCalculator = () => {
         </div>
         <div className="ml-6">
           <div className="mb-4">
-            <p className="text-sm">Total Repayment Amount</p>
+            <p className="text-sm">Total Interest Payable</p>
             <p className="text-2xl font-bold mt-1">
               ₦{(calculateEMI() * tenure).toLocaleString()}
             </p>
@@ -155,6 +178,12 @@ const LoanCalculator = () => {
             <p className="text-2xl font-bold mt-1">
               ₦{(salary * 12).toLocaleString() || "0.00"}
               <span className="text-xs"> (1 YR)</span>
+            </p>
+          </div>
+          <div className="mb-4">
+            <p className="text-sm">Fixed Interest</p>
+            <p className="text-2xl font-bold mt-1">
+              ₦{monthlyPayment.toLocaleString()}
             </p>
           </div>
           <div className="mb-4">
