@@ -56,16 +56,44 @@ const LoanCalculator = () => {
           />
         </div>
 
-        {/* Loan Amount Slider */}
+        {/* Loan Amount Input */}
         <div className="mt-4">
           <label className="block text-gray-600">
             Amount to Borrow: ₦{loanAmount.toLocaleString()}
           </label>
+
+          {/* Editable Input Field */}
+          <input
+            type="number"
+            placeholder="Enter amount to borrow..."
+            value={loanAmount === "" ? "" : loanAmount} // Allows clearing input
+            onChange={(e) => {
+              let value = e.target.value;
+
+              // Allow empty input for user editing
+              if (value === "") {
+                setLoanAmount("");
+              } else {
+                let numericValue = Number(value);
+
+                // Ensure value is within range
+                if (numericValue >= 200000 && numericValue <= 1500000) {
+                  setLoanAmount(numericValue);
+                }
+              }
+            }}
+            className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
+      flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
+      font-normal w-full h-12 text-xs rounded-md shadow-sm"
+          />
+
+          {/* Range Slider */}
           <input
             type="range"
             min="200000"
             max="1500000"
-            value={loanAmount}
+            step="1000" // Ensures smoother increments
+            value={loanAmount === "" ? 200000 : loanAmount} // Default to 200,000 if empty
             onChange={(e) => setLoanAmount(Number(e.target.value))}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-purple-600"
             style={{
