@@ -25,25 +25,32 @@ const LoanCalculator = () => {
           <img src={logo} alt="" className="w-32 h-auto" />
         </h2>
 
-        {/* Down Payment Slider */}
+        {/* Name */}
         <div className="mt-6">
-          <label className="block text-gray-600">
-            Down Payment: ₹{downPayment.toLocaleString()}
-          </label>
+          <label className="block text-gray-600">Name:</label>
           <input
-            type="range"
-            min="50000"
-            max="500000"
-            value={downPayment}
-            onChange={(e) => setDownPayment(Number(e.target.value))}
-            className="w-full"
+            type="text"
+            placeholder="Enter..."
+            className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
+            flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
+            font-normal w-full h-12 text-xs rounded-md shadow-sm"
           />
         </div>
-
+        {/* Tenure Slider */}
+        <div className="mt-4">
+          <label className="block text-gray-600">Monthly Salary</label>
+          <input
+            type="text"
+            placeholder="Enter..."
+            className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
+            flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
+            font-normal w-full h-12 text-xs rounded-md shadow-sm"
+          />
+        </div>
         {/* Loan Amount Slider */}
         <div className="mt-4">
           <label className="block text-gray-600">
-            Loan Amount: ₦{loanAmount.toLocaleString()}
+            Amount to Borrow: ₦{loanAmount.toLocaleString()}
           </label>
           <input
             type="range"
@@ -51,35 +58,6 @@ const LoanCalculator = () => {
             max="1500000"
             value={loanAmount}
             onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-
-        {/* Tenure Slider */}
-        <div className="mt-4">
-          <label className="block text-gray-600">Tenure: {tenure} Months</label>
-          <input
-            type="range"
-            min="12"
-            max="84"
-            value={tenure}
-            onChange={(e) => setTenure(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-
-        {/* Interest Rate Slider */}
-        <div className="mt-4">
-          <label className="block text-gray-600">
-            Interest Rate: {interestRate}%
-          </label>
-          <input
-            type="range"
-            min="5"
-            max="15"
-            step="0.1"
-            value={interestRate}
-            onChange={(e) => setInterestRate(Number(e.target.value))}
             className="w-full"
           />
         </div>
