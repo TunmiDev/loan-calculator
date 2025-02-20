@@ -66,8 +66,12 @@ const LoanCalculator = () => {
             max="1500000"
             value={loanAmount}
             onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="w-full h-2 bg-purple-600 rounded-lg appearance-none cursor-pointer
-    accent-purple-600 peer"
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-purple-600"
+            style={{
+              background: `linear-gradient(to right, #8000ff ${
+                ((loanAmount - 200000) / (1500000 - 200000)) * 100
+              }%, #e5e7eb 0%)`,
+            }}
           />
         </div>
 
