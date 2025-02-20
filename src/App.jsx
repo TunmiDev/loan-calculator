@@ -66,7 +66,8 @@ const LoanCalculator = () => {
             max="1500000"
             value={loanAmount}
             onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="w-full"
+            className="w-full h-2 bg-purple-600 rounded-lg appearance-none cursor-pointer
+    accent-purple-600 peer"
           />
         </div>
 
