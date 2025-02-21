@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../src/assets/logo.png";
 
 const LoanCalculator = () => {
   const [name, setName] = useState("");
-  const [salary, setSalary] = useState("");
-  const [downPayment, setDownPayment] = useState(299642);
-  const [loanAmount, setLoanAmount] = useState(823290);
-  const [tenure, setTenure] = useState(60);
+  const [salary, setSalary] = useState(0);
+  const [downPayment, setDownPayment] = useState(0);
+  const [loanAmount, setLoanAmount] = useState(0); // Initial loan amount
+  const [tenure, setTenure] = useState(60); // in months
   const [interestRate, setInterestRate] = useState(9.5);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [totalInterestPayable, setTotalInterestPayable] = useState(0);
 
-  // Function to calculate
+  // Update down payment whenever loan amount changes
+  useEffect(() => {
+    setDownPayment(loanAmount / 2);
+  }, [loanAmount]);
+
+  // Function to calculate EMI
   const calculateEMI = () => {
     const monthlyRate = interestRate / 100 / 12;
     const totalMonths = tenure;
@@ -18,6 +24,30 @@ const LoanCalculator = () => {
       (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
       (Math.pow(1 + monthlyRate, totalMonths) - 1);
     return emi.toFixed(0);
+  };
+
+  // Function to calculate total interest payable
+  const calculateTotalInterestPayable = () => {
+    const loanTermInYears = tenure / 12; // Convert months to years
+    const totalInterest = loanAmount * (interestRate / 100) * loanTermInYears;
+    return totalInterest.toFixed(0);
+  };
+
+  // Handle Calculate button click
+  const handleCalculate = () => {
+    const emi = calculateEMI();
+    const maxMonthlyPayment = salary ? Number(salary) * 0.3 : 0; // Calculate 30% of salary
+
+    // Check if the calculated EMI exceeds the maximum allowable payment
+    if (emi > maxMonthlyPayment) {
+      alert(
+        `The monthly payment of ₦${emi} exceeds 30% of your salary (₦${maxMonthlyPayment}). Please adjust the loan amount or terms.`
+      );
+    } else {
+      setMonthlyPayment(emi);
+      const totalInterest = calculateTotalInterestPayable();
+      setTotalInterestPayable(totalInterest);
+    }
   };
 
   return (
@@ -44,7 +74,9 @@ const LoanCalculator = () => {
 
         {/* Monthly Salary */}
         <div className="mt-4">
-          <label className="block text-gray-600">Monthly Salary</label>
+          <label className="block text-gray-600">
+            Monthly Salary:₦{salary.toLocaleString()}
+          </label>
           <input
             type="text"
             placeholder="Enter your salary..."
@@ -66,9 +98,11 @@ const LoanCalculator = () => {
           <input
             type="text"
             placeholder="Enter amount to borrow..."
+            value={loanAmount}
+            onChange={(e) => setLoanAmount(Number(e.target.value))}
             className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
-      flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
-      font-normal w-full h-12 text-xs rounded-md shadow-sm mb-5"
+            flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
+            font-normal w-full h-12 text-xs rounded-md shadow-sm mb-5"
           />
         </div>
 
@@ -77,20 +111,16 @@ const LoanCalculator = () => {
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
             {/* Down Payment */}
             <label className="bg-purple-500 text-white px-4 py-2 rounded-md whitespace-nowrap">
-              Down Payment:
+              Down Payment: ₦{downPayment.toLocaleString()}
             </label>
-            <input
-              value="411645"
-              type="text"
-              className="p-2 border border-gray-300 rounded-md w-full sm:w-48"
-            />
 
             {/* Interest Rate */}
             <label className="bg-purple-500 text-white px-4 py-2 rounded-md whitespace-nowrap">
               Interest Rate:
             </label>
             <input
-              value="10 %"
+              value={interestRate}
+              onChange={(e) => setInterestRate(Number(e.target.value))}
               type="text"
               className="p-2 border border-gray-300 rounded-md w-full sm:w-20"
             />
@@ -102,7 +132,7 @@ const LoanCalculator = () => {
           {/* Calculate Button */}
           <button
             className="w-full sm:w-52 md:w-[139px] h-[56px] bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 transition-all"
-            onClick={() => setMonthlyPayment(calculateEMI())} // Update state on click
+            onClick={handleCalculate} // Update state on click
           >
             Calculate
           </button>
@@ -137,7 +167,7 @@ const LoanCalculator = () => {
           <div className="mb-4">
             <p className="text-sm">Total Interest Payable</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{(calculateEMI() * tenure).toLocaleString()}
+              ₦{totalInterestPayable.toLocaleString()}
             </p>
           </div>
 
