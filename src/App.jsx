@@ -46,7 +46,7 @@ const LoanCalculator = () => {
         <div className="mt-4">
           <label className="block text-gray-600">Monthly Salary</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter your salary..."
             value={salary}
             onChange={(e) => setSalary(e.target.value)}
@@ -64,81 +64,54 @@ const LoanCalculator = () => {
 
           {/* Editable Input Field */}
           <input
-            type="number"
+            type="text"
             placeholder="Enter amount to borrow..."
-            value={loanAmount === "" ? "" : loanAmount} // Allows clearing input
-            onChange={(e) => {
-              let value = e.target.value;
-
-              // Allow empty input for user editing
-              if (value === "") {
-                setLoanAmount("");
-              } else {
-                let numericValue = Number(value);
-
-                // Ensure value is within range
-                if (numericValue >= 200000 && numericValue <= 1500000) {
-                  setLoanAmount(numericValue);
-                }
-              }
-            }}
             className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
       flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
       font-normal w-full h-12 text-xs rounded-md shadow-sm mb-5"
           />
-
-          {/* Range Slider */}
-          <input
-            type="range"
-            min="200000"
-            max="1500000"
-            step="1000" // Ensures smoother increments
-            value={loanAmount === "" ? 200000 : loanAmount} // Default to 200,000 if empty
-            onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-purple-600 mb-6"
-            style={{
-              background: `linear-gradient(to right, #8000ff ${
-                ((loanAmount - 200000) / (1500000 - 200000)) * 100
-              }%, #e5e7eb 0%)`,
-            }}
-          />
         </div>
 
         {/* Down Payment and Interest Rate */}
-        <div>
-          <div className="items-center flex space-x-4">
-            <label className="bg-purple-500 text-white px-4 py-2 rounded-md">
+        <div className="mt-10">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
+            {/* Down Payment */}
+            <label className="bg-purple-500 text-white px-4 py-2 rounded-md whitespace-nowrap">
               Down Payment:
             </label>
             <input
               value="411645"
               type="text"
-              className="p-2 border border-gray-300 rounded-md"
+              className="p-2 border border-gray-300 rounded-md w-full sm:w-48"
             />
-            <label className="bg-purple-500 text-white px-4 py-2 rounded-md">
+
+            {/* Interest Rate */}
+            <label className="bg-purple-500 text-white px-4 py-2 rounded-md whitespace-nowrap">
               Interest Rate:
             </label>
-            <div className="items-center flex">
-              <input
-                value="10 %"
-                type="text"
-                className="p-2 border border-gray-300 w-16 rounded-md"
-              />
-            </div>
+            <input
+              value="10 %"
+              type="text"
+              className="p-2 border border-gray-300 rounded-md w-full sm:w-20"
+            />
           </div>
         </div>
 
         {/* Buttons*/}
-        <button
-          className="mt-10 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-32"
-          onClick={() => setMonthlyPayment(calculateEMI())} // Update state on click
-        >
-          Calculate
-        </button>
-        <span>{""}</span>
-        <button className="mt-10 w-52 bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 mx-6">
-          KYC Form
-        </button>
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12">
+          {/* Calculate Button */}
+          <button
+            className="w-full sm:w-52 md:w-[139px] h-[56px] bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 transition-all"
+            onClick={() => setMonthlyPayment(calculateEMI())} // Update state on click
+          >
+            Calculate
+          </button>
+
+          {/* KYC Form Button */}
+          <button className="w-full sm:w-52 md:w-[139px] h-[56px] bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 transition-all">
+            KYC Form
+          </button>
+        </div>
       </div>
 
       {/* Loan Results */}
@@ -180,9 +153,8 @@ const LoanCalculator = () => {
               ₦{monthlyPayment.toLocaleString()}
             </p>
           </div>
+
           {/*Loan tenure, Payment Frequency & Breakdown of Payments */}
-          {/* <div className="items-center bg-purple-700 flex flex-col p-6 min-h-screen"> */}
-          {/* <div className="bg-purple-700 rounded-lg shadow-lg w-full p-6 max-w-2xl"> */}
           <p className="text-xl font-bold mb-4 text-white"></p>
           <label className="mb-2 font-medium block">Loan Tenure:</label>
           <select
@@ -238,15 +210,16 @@ const LoanCalculator = () => {
               </tbody>
             </table>
           </div>
-          {/* </div> */}
-          {/* </div> */}
+
           {/* Button */}
-          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
-            Download Result
-          </button>
-          <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
-            Share Details
-          </button>
+          <div className="mt-8 flex flex-wrap sm:flex-nowrap justify-center gap-4">
+            <button className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400">
+              Download Result
+            </button>
+            <button className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400">
+              Share Details
+            </button>
+          </div>
         </div>
       </div>
     </div>
