@@ -158,12 +158,6 @@ const LoanCalculator = () => {
                 ₦{loanAmount.toLocaleString()}
               </p>
             </div>
-            <div className="mt-4">
-              <p className="text-sm">Loan Tenure</p>
-              <p className="text-2xl font-bold mt-1">
-                ₦{downPayment.toLocaleString()}
-              </p>
-            </div>
           </div>
         </div>
         <div className="ml-6">
@@ -173,13 +167,7 @@ const LoanCalculator = () => {
               ₦{(calculateEMI() * tenure).toLocaleString()}
             </p>
           </div>
-          <div className="mb-4">
-            <p className="text-sm">Customer earns</p>
-            <p className="text-2xl font-bold mt-1">
-              ₦{(salary * 12).toLocaleString() || "0.00"}
-              <span className="text-xs"> (1 YR)</span>
-            </p>
-          </div>
+
           <div className="mb-4">
             <p className="text-sm">Fixed Interest</p>
             <p className="text-2xl font-bold mt-1">
@@ -192,7 +180,66 @@ const LoanCalculator = () => {
               ₦{monthlyPayment.toLocaleString()}
             </p>
           </div>
-
+          {/*Loan tenure, Payment Frequency & Breakdown of Payments */}
+          {/* <div className="items-center bg-purple-700 flex flex-col p-6 min-h-screen"> */}
+          {/* <div className="bg-purple-700 rounded-lg shadow-lg w-full p-6 max-w-2xl"> */}
+          <p className="text-xl font-bold mb-4 text-white"></p>
+          <label className="mb-2 font-medium block">Loan Tenure:</label>
+          <select
+            type="select-one"
+            className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
+          >
+            <option value="12">12 Months</option>
+            <option value="24">24 Months</option>
+            <option value="36">36 Months</option>
+          </select>
+          <label className="mb-2 font-medium block">Payment Frequency:</label>
+          <select
+            type="select-one"
+            className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
+          >
+            <option value="Monthly">Monthly</option>
+            <option value="Bi-weekly">Bi-weekly</option>
+          </select>
+          <p className="text-lg font-semibold mt-4">Payment Breakdown</p>
+          <div className="overflow-x-auto">
+            <table className="bg-white shadow-md mt-2 min-w-full border-b rounded">
+              <thead className="bg-purple-700 text-white">
+                <tr>
+                  <th className="py-2 px-4 text-left">Payment #</th>
+                  <th className="py-2 px-4 text-left">Amount Paid</th>
+                  <th className="py-2 px-4 text-left">Interest Paid</th>
+                  <th className="py-2 px-4 text-left">Principal Paid</th>
+                  <th className="py-2 px-4 text-left">Remaining Balance</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700">
+                <tr className="border-t">
+                  <td className="py-2 px-4">Month 1</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦0.00</td>
+                  <td className="py-2 px-4">₦977,000.00</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="py-2 px-4">Month 2</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦0.00</td>
+                  <td className="py-2 px-4">₦968,858.33</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="py-2 px-4">Month 3</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦8,141.67</td>
+                  <td className="py-2 px-4">₦0.00</td>
+                  <td className="py-2 px-4">₦960,716.67</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          {/* </div> */}
+          {/* </div> */}
           {/* Button */}
           <button className="mt-8 w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400 mx-2">
             Download Result
