@@ -11,25 +11,22 @@ const LoanCalculator = () => {
   const [recurringPayments, setRecurringPayments] = useState(0);
   const [monthlyFrequency, setMonthlyFrequency] = useState(1);
   const [totalInterestPayable, setTotalInterestPayable] = useState(0);
+  const [paymentBreakdown, setPaymentBreakdown] = useState([]); // New state for payment breakdown
 
   // Update down payment whenever loan amount changes
   useEffect(() => {
     setDownPayment(loanAmount / 2);
   }, [loanAmount]);
 
-  useEffect(() => {
-    handleCalculate();
-  }, [tenure, monthlyFrequency]);
-
   // Function to calculate EMI
   const calculateEMI = () => {
     let rate, totalPayments;
 
-    if (monthlyFrequency == "monthly") {
+    if (monthlyFrequency === "monthly") {
       rate = interestRate / 100 / 12;
       totalPayments = tenure;
     } else {
-      rate = interestRate / 100 / 26;
+      rate = interestRate / 100 / 26; // Assuming bi-weekly payments
       totalPayments = (tenure / 12) * 26;
     }
 
@@ -46,6 +43,29 @@ const LoanCalculator = () => {
     return totalInterest.toFixed(0);
   };
 
+  // Function to calculate payment breakdown
+  const calculatePaymentBreakdown = () => {
+    const breakdown = [];
+    let remainingBalance = loanAmount;
+    const monthlyRate = interestRate / 100 / 12;
+
+    for (let month = 1; month <= tenure; month++) {
+      const interestPayment = remainingBalance * monthlyRate;
+      const principalPayment = recurringPayments - interestPayment;
+      remainingBalance -= principalPayment;
+
+      breakdown.push({
+        month,
+        totalPayment: recurringPayments,
+        interestPayment: interestPayment.toFixed(2),
+        principalPayment: principalPayment.toFixed(2),
+        remainingBalance: remainingBalance.toFixed(2),
+      });
+    }
+
+    setPaymentBreakdown(breakdown);
+  };
+
   // Handle Calculate button click
   const handleCalculate = () => {
     const emi = calculateEMI();
@@ -60,6 +80,7 @@ const LoanCalculator = () => {
       setRecurringPayments(emi);
       const totalInterest = calculateTotalInterestPayable();
       setTotalInterestPayable(totalInterest);
+      calculatePaymentBreakdown(); // Call to generate the breakdown
     }
   };
 
@@ -88,7 +109,7 @@ const LoanCalculator = () => {
         {/* Monthly Salary */}
         <div className="mt-4">
           <label className="block text-gray-600">
-            Monthly Salary:₦{salary.toLocaleString()}
+            Monthly Salary: ₦{salary.toLocaleString()}
           </label>
           <input
             type="text"
@@ -197,14 +218,14 @@ const LoanCalculator = () => {
             </p>
           </div>
 
-          {/*Loan tenure, Payment Frequency & Breakdown of Payments */}
+          {/* Loan tenure, Payment Frequency & Breakdown of Payments */}
           <p className="text-xl font-bold mb-4 text-white"></p>
           <label className="mb-2 font-medium block">Loan Tenure:</label>
           <select
             type="select-one"
             className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
             onChange={(e) => setTenure(Number(e.target.value))}
-            value={Number(tenure)}
+            value={tenure}
           >
             <option value="12">12 Months</option>
             <option value="24">24 Months</option>
@@ -232,27 +253,15 @@ const LoanCalculator = () => {
                 </tr>
               </thead>
               <tbody className="text-gray-700">
-                <tr className="border-t">
-                  <td className="py-2 px-4">Month 1</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦0.00</td>
-                  <td className="py-2 px-4">₦977,000.00</td>
-                </tr>
-                <tr className="border-t">
-                  <td className="py-2 px-4">Month 2</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦0.00</td>
-                  <td className="py-2 px-4">₦968,858.33</td>
-                </tr>
-                <tr className="border-t">
-                  <td className="py-2 px-4">Month 3</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦8,141.67</td>
-                  <td className="py-2 px-4">₦0.00</td>
-                  <td className="py-2 px-4">₦960,716.67</td>
-                </tr>
+                {paymentBreakdown.map((payment) => (
+                  <tr className="border-t" key={payment.month}>
+                    <td className="py-2 px-4">Month {payment.month}</td>
+                    <td className="py-2 px-4">₦{payment.totalPayment}</td>
+                    <td className="py-2 px-4">₦{payment.interestPayment}</td>
+                    <td className="py-2 px-4">₦{payment.principalPayment}</td>
+                    <td className="py-2 px-4">₦{payment.remainingBalance}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
