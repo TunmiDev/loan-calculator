@@ -6,9 +6,10 @@ const LoanCalculator = () => {
   const [salary, setSalary] = useState(0);
   const [downPayment, setDownPayment] = useState(0);
   const [loanAmount, setLoanAmount] = useState(0); // Initial loan amount
-  const [tenure, setTenure] = useState(60); // in months
+  const [tenure, setTenure] = useState(24); // in months
   const [interestRate, setInterestRate] = useState(9.5);
-  const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [recurringPayments, setRecurringPayments] = useState(0);
+  const [monthlyFrequency, setMonthlyFrequency] = useState(1);
   const [totalInterestPayable, setTotalInterestPayable] = useState(0);
 
   // Update down payment whenever loan amount changes
@@ -16,13 +17,25 @@ const LoanCalculator = () => {
     setDownPayment(loanAmount / 2);
   }, [loanAmount]);
 
+  useEffect(() => {
+    handleCalculate();
+  }, [tenure, monthlyFrequency]);
+
   // Function to calculate EMI
   const calculateEMI = () => {
-    const monthlyRate = interestRate / 100 / 12;
-    const totalMonths = tenure;
+    let rate, totalPayments;
+
+    if (monthlyFrequency == "monthly") {
+      rate = interestRate / 100 / 12;
+      totalPayments = tenure;
+    } else {
+      rate = interestRate / 100 / 26;
+      totalPayments = (tenure / 12) * 26;
+    }
+
     const emi =
-      (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
-      (Math.pow(1 + monthlyRate, totalMonths) - 1);
+      (loanAmount * rate * Math.pow(1 + rate, totalPayments)) /
+      (Math.pow(1 + rate, totalPayments) - 1);
     return emi.toFixed(0);
   };
 
@@ -44,7 +57,7 @@ const LoanCalculator = () => {
         `The monthly payment of ₦${emi} exceeds 30% of your salary (₦${maxMonthlyPayment}). Please adjust the loan amount or terms.`
       );
     } else {
-      setMonthlyPayment(emi);
+      setRecurringPayments(emi);
       const totalInterest = calculateTotalInterestPayable();
       setTotalInterestPayable(totalInterest);
     }
@@ -81,7 +94,7 @@ const LoanCalculator = () => {
             type="text"
             placeholder="Enter your salary..."
             value={salary}
-            onChange={(e) => setSalary(e.target.value)}
+            onChange={(e) => setSalary(Number(e.target.value))}
             className="focus:border-indigo-700 focus:outline-none focus:shadow-outline
             flex-grow transition duration-200 appearance-none p-2 border-2 border-gray-300 text-black bg-gray-100
             font-normal w-full h-12 text-xs rounded-md shadow-sm"
@@ -174,13 +187,13 @@ const LoanCalculator = () => {
           <div className="mb-4">
             <p className="text-sm">Fixed Interest</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{monthlyPayment.toLocaleString()}
+              ₦{recurringPayments.toLocaleString()}
             </p>
           </div>
           <div className="mb-4">
             <p className="text-sm">Monthly Payment</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{monthlyPayment.toLocaleString()}
+              ₦{recurringPayments.toLocaleString()}
             </p>
           </div>
 
@@ -190,6 +203,8 @@ const LoanCalculator = () => {
           <select
             type="select-one"
             className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
+            onChange={(e) => setTenure(Number(e.target.value))}
+            value={Number(tenure)}
           >
             <option value="12">12 Months</option>
             <option value="24">24 Months</option>
@@ -199,9 +214,10 @@ const LoanCalculator = () => {
           <select
             type="select-one"
             className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
+            onChange={(e) => setMonthlyFrequency(e.target.value)}
           >
-            <option value="Monthly">Monthly</option>
-            <option value="Bi-weekly">Bi-weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="bi-weekly">Bi-weekly</option>
           </select>
           <p className="text-lg font-semibold mt-4">Payment Breakdown</p>
           <div className="overflow-x-auto">
