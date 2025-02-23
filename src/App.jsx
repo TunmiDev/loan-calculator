@@ -221,16 +221,6 @@ const LoanCalculator = () => {
             KYC Form
           </button>
         </div>
-
-        {/* Download Button */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-4">
-          <button
-            className="w-full sm:w-52 md:w-[139px] h-[56px] bg-purple-400 text-white py-3 rounded-lg shadow-md hover:bg-purple-700 transition-all"
-            onClick={handleDownload} // Trigger PDF download
-          >
-            Download Result
-          </button>
-        </div>
       </div>
 
       {/* Loan Results */}
@@ -324,8 +314,14 @@ const LoanCalculator = () => {
             </table>
           </div>
 
-          {/* Button */}
+          {/* Download Button in Output Section */}
           <div className="mt-8 flex flex-wrap sm:flex-nowrap justify-center gap-4">
+            <button
+              className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400"
+              onClick={handleDownload} // Trigger PDF download
+            >
+              Download Result
+            </button>
             <button className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400">
               Share Details
             </button>
