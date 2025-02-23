@@ -7,7 +7,7 @@ const LoanCalculator = () => {
   const [downPayment, setDownPayment] = useState(0);
   const [loanAmount, setLoanAmount] = useState(0); // Initial loan amount
   const [tenure, setTenure] = useState(24); // in months
-  const [interestRate, setInterestRate] = useState(9.5);
+  const [interestRate, setInterestRate] = useState(9.5); // Fixed interest rate
   const [recurringPayments, setRecurringPayments] = useState(0);
   const [monthlyFrequency, setMonthlyFrequency] = useState("monthly");
   const [totalInterestPayable, setTotalInterestPayable] = useState(0);
@@ -23,11 +23,11 @@ const LoanCalculator = () => {
     let rate, totalPayments;
 
     if (monthlyFrequency === "monthly") {
-      rate = interestRate / 100 / 12;
-      totalPayments = tenure;
+      rate = interestRate / 100 / 12; // Monthly rate
+      totalPayments = tenure; // Total monthly payments
     } else {
-      rate = interestRate / 100 / 26; // Assuming bi-weekly payments
-      totalPayments = (tenure / 12) * 26;
+      rate = interestRate / 100 / 26; // Bi-weekly rate
+      totalPayments = (tenure / 12) * 26; // Total bi-weekly payments
     }
 
     const emi =
@@ -38,28 +38,47 @@ const LoanCalculator = () => {
 
   // Function to calculate total interest payable
   const calculateTotalInterestPayable = (emi) => {
-    const totalPayments = emi * tenure; // Total payments made
+    const totalPayments =
+      emi * (monthlyFrequency === "monthly" ? tenure : (tenure / 12) * 26); // Total payments made
     const totalInterest = totalPayments - loanAmount; // Total interest paid
-    return totalInterest.toFixed(0);
+
+    // Ensure total interest is not negative
+    return totalInterest < 0 ? 0 : Math.ceil(totalInterest); // Round up
   };
 
   // Function to calculate payment breakdown
   const calculatePaymentBreakdown = (emi) => {
     const breakdown = [];
     let remainingBalance = loanAmount;
-    const monthlyRate = interestRate / 100 / 12;
+    const monthlyRate =
+      interestRate / 100 / (monthlyFrequency === "monthly" ? 12 : 26); // Adjust rate based on frequency
 
-    for (let month = 1; month <= tenure; month++) {
+    for (
+      let month = 1;
+      month <= (monthlyFrequency === "monthly" ? tenure : (tenure / 12) * 26);
+      month++
+    ) {
       const interestPayment = remainingBalance * monthlyRate;
-      const principalPayment = emi - interestPayment;
+      let principalPayment = emi - interestPayment;
+
+      // Ensure principal payment is not negative
+      if (principalPayment < 0) {
+        principalPayment = 0; // Set to zero to avoid negative values
+      }
+
       remainingBalance -= principalPayment;
+
+      // Ensure remaining balance does not go negative
+      if (remainingBalance < 0) {
+        remainingBalance = 0; // Set to zero to avoid negative balance
+      }
 
       breakdown.push({
         month,
-        totalPayment: emi,
-        interestPayment: interestPayment.toFixed(2),
-        principalPayment: principalPayment.toFixed(2),
-        remainingBalance: remainingBalance.toFixed(2),
+        totalPayment: Math.ceil(emi), // Round up
+        interestPayment: Math.ceil(interestPayment), // Round up
+        principalPayment: Math.ceil(principalPayment), // Round up
+        remainingBalance: Math.ceil(remainingBalance), // Round up
       });
     }
 
@@ -69,19 +88,17 @@ const LoanCalculator = () => {
   // Handle Calculate button click
   const handleCalculate = () => {
     const emi = calculateEMI();
-    const maxMonthlyPayment = salary ? Number(salary) * 0.3 : 0; // Calculate 30% of salary
+    const maxMonthlyPayment = salary ? Math.ceil(Number(salary) * 0.3) : 0; // Calculate 30% of salary and round up
 
     // Check if the calculated EMI exceeds the maximum allowable payment
     if (emi > maxMonthlyPayment) {
       alert(
-        `The monthly payment of ₦${emi.toFixed(
-          0
-        )} exceeds 30% of your salary (₦${maxMonthlyPayment.toFixed(
-          0
-        )}). Please adjust the loan amount or terms.`
+        `The monthly payment of ₦${Math.ceil(
+          emi
+        )} exceeds 30% of your salary (₦${maxMonthlyPayment}). Please adjust the loan amount or terms.`
       );
     } else {
-      setRecurringPayments(emi);
+      setRecurringPayments(Math.ceil(emi)); // Round up
       const totalInterest = calculateTotalInterestPayable(emi);
       setTotalInterestPayable(totalInterest);
       calculatePaymentBreakdown(emi); // Pass the EMI to generate the breakdown
@@ -113,7 +130,7 @@ const LoanCalculator = () => {
         {/* Monthly Salary */}
         <div className="mt-4">
           <label className="block text-gray-600">
-            Monthly Salary: ₦{salary.toLocaleString()}
+            Monthly Salary: ₦{Math.ceil(salary).toLocaleString()}
           </label>
           <input
             type="text"
@@ -129,7 +146,7 @@ const LoanCalculator = () => {
         {/* Loan Amount Input */}
         <div className="mt-4">
           <label className="block text-gray-600">
-            Amount to Borrow: ₦{loanAmount.toLocaleString()}
+            Amount to Borrow: ₦{Math.ceil(loanAmount).toLocaleString()}
           </label>
 
           {/* Editable Input Field */}
@@ -149,7 +166,7 @@ const LoanCalculator = () => {
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
             {/* Down Payment */}
             <label className="bg-purple-500 text-white px-4 py-2 rounded-md whitespace-nowrap">
-              Down Payment: ₦{downPayment.toLocaleString()}
+              Down Payment: ₦{Math.ceil(downPayment).toLocaleString()}
             </label>
 
             {/* Interest Rate */}
@@ -196,7 +213,7 @@ const LoanCalculator = () => {
             <div>
               <p className="text-sm">Eligible Loan Amount</p>
               <p className="text-2xl font-bold mt-1">
-                ₦{loanAmount.toLocaleString()}
+                ₦{Math.ceil(loanAmount).toLocaleString()}
               </p>
             </div>
           </div>
@@ -205,20 +222,20 @@ const LoanCalculator = () => {
           <div className="mb-4">
             <p className="text-sm">Total Interest Payable</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{totalInterestPayable.toLocaleString()}
+              ₦{Math.ceil(totalInterestPayable).toLocaleString()}
             </p>
           </div>
 
           <div className="mb-4">
             <p className="text-sm">Fixed Interest</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{recurringPayments.toLocaleString()}
+              ₦{Math.ceil(recurringPayments).toLocaleString()}
             </p>
           </div>
           <div className="mb-4">
             <p className="text-sm">Monthly Payment</p>
             <p className="text-2xl font-bold mt-1">
-              ₦{recurringPayments.toLocaleString()}
+              ₦{Math.ceil(recurringPayments).toLocaleString()}
             </p>
           </div>
 
