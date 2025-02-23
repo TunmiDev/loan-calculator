@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf"; // Import jsPDF
 import logo from "../src/assets/logo.png";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
 
 const LoanCalculator = () => {
   const [name, setName] = useState("");
@@ -128,6 +136,16 @@ const LoanCalculator = () => {
     doc.text(`Tenure: ${tenure} months`, 10, 70);
     doc.save("loan_details.pdf"); // Specify the file name
   };
+
+  // Share URL and title for sharing
+  const shareUrl = window.location.href; // URL to share
+  const title =
+    `Loan Amount: ₦${Math.ceil(loanAmount).toLocaleString()}\n` +
+    `Total Interest Payable: ₦${Math.ceil(
+      totalInterestPayable
+    ).toLocaleString()}\n` +
+    `Monthly Payment: ₦${Math.ceil(recurringPayments).toLocaleString()}\n` +
+    `Name: ${name}`;
 
   return (
     <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen p-6">
@@ -314,7 +332,7 @@ const LoanCalculator = () => {
             </table>
           </div>
 
-          {/* Download Button in Output Section */}
+          {/* Download and Share Buttons in Output Section */}
           <div className="mt-8 flex flex-wrap sm:flex-nowrap justify-center gap-4">
             <button
               className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400"
@@ -322,9 +340,17 @@ const LoanCalculator = () => {
             >
               Download Result
             </button>
-            <button className="w-full sm:w-2/5 bg-white text-black py-3 rounded-lg shadow-md hover:bg-purple-400">
-              Share Details
-            </button>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <FacebookShareButton url={shareUrl} quote={title}>
+                <FacebookIcon size={32} round />
+              </FacebookShareButton>
+              <TwitterShareButton url={shareUrl} title={title}>
+                <TwitterIcon size={32} round />
+              </TwitterShareButton>
+              <WhatsappShareButton url={shareUrl} title={title}>
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
+            </div>
           </div>
         </div>
       </div>
