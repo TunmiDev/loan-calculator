@@ -9,7 +9,7 @@ const LoanCalculator = () => {
   const [tenure, setTenure] = useState(24); // in months
   const [interestRate, setInterestRate] = useState(9.5);
   const [recurringPayments, setRecurringPayments] = useState(0);
-  const [monthlyFrequency, setMonthlyFrequency] = useState(1);
+  const [monthlyFrequency, setMonthlyFrequency] = useState("monthly");
   const [totalInterestPayable, setTotalInterestPayable] = useState(0);
   const [paymentBreakdown, setPaymentBreakdown] = useState([]); // New state for payment breakdown
 
@@ -33,30 +33,30 @@ const LoanCalculator = () => {
     const emi =
       (loanAmount * rate * Math.pow(1 + rate, totalPayments)) /
       (Math.pow(1 + rate, totalPayments) - 1);
-    return emi.toFixed(0);
+    return emi;
   };
 
   // Function to calculate total interest payable
-  const calculateTotalInterestPayable = () => {
-    const loanTermInYears = tenure / 12; // Convert months to years
-    const totalInterest = loanAmount * (interestRate / 100) * loanTermInYears;
+  const calculateTotalInterestPayable = (emi) => {
+    const totalPayments = emi * tenure; // Total payments made
+    const totalInterest = totalPayments - loanAmount; // Total interest paid
     return totalInterest.toFixed(0);
   };
 
   // Function to calculate payment breakdown
-  const calculatePaymentBreakdown = () => {
+  const calculatePaymentBreakdown = (emi) => {
     const breakdown = [];
     let remainingBalance = loanAmount;
     const monthlyRate = interestRate / 100 / 12;
 
     for (let month = 1; month <= tenure; month++) {
       const interestPayment = remainingBalance * monthlyRate;
-      const principalPayment = recurringPayments - interestPayment;
+      const principalPayment = emi - interestPayment;
       remainingBalance -= principalPayment;
 
       breakdown.push({
         month,
-        totalPayment: recurringPayments,
+        totalPayment: emi,
         interestPayment: interestPayment.toFixed(2),
         principalPayment: principalPayment.toFixed(2),
         remainingBalance: remainingBalance.toFixed(2),
@@ -74,13 +74,17 @@ const LoanCalculator = () => {
     // Check if the calculated EMI exceeds the maximum allowable payment
     if (emi > maxMonthlyPayment) {
       alert(
-        `The monthly payment of ₦${emi} exceeds 30% of your salary (₦${maxMonthlyPayment}). Please adjust the loan amount or terms.`
+        `The monthly payment of ₦${emi.toFixed(
+          0
+        )} exceeds 30% of your salary (₦${maxMonthlyPayment.toFixed(
+          0
+        )}). Please adjust the loan amount or terms.`
       );
     } else {
       setRecurringPayments(emi);
-      const totalInterest = calculateTotalInterestPayable();
+      const totalInterest = calculateTotalInterestPayable(emi);
       setTotalInterestPayable(totalInterest);
-      calculatePaymentBreakdown(); // Call to generate the breakdown
+      calculatePaymentBreakdown(emi); // Pass the EMI to generate the breakdown
     }
   };
 
@@ -236,6 +240,7 @@ const LoanCalculator = () => {
             type="select-one"
             className="p-2 border-2 w-full rounded-md mb-4 bg-purple-700"
             onChange={(e) => setMonthlyFrequency(e.target.value)}
+            value={monthlyFrequency}
           >
             <option value="monthly">Monthly</option>
             <option value="bi-weekly">Bi-weekly</option>
@@ -256,7 +261,9 @@ const LoanCalculator = () => {
                 {paymentBreakdown.map((payment) => (
                   <tr className="border-t" key={payment.month}>
                     <td className="py-2 px-4">Month {payment.month}</td>
-                    <td className="py-2 px-4">₦{payment.totalPayment}</td>
+                    <td className="py-2 px-4">
+                      ₦{payment.totalPayment.toFixed(2)}
+                    </td>
                     <td className="py-2 px-4">₦{payment.interestPayment}</td>
                     <td className="py-2 px-4">₦{payment.principalPayment}</td>
                     <td className="py-2 px-4">₦{payment.remainingBalance}</td>
